@@ -24,7 +24,6 @@ const Register = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (inputs.password === inputs.confirm) {
-            console.log(inputs)
             mutate(inputs)
         }
     }
