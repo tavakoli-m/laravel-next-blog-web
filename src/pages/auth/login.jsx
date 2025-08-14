@@ -1,5 +1,5 @@
 import { Http } from "@/services/Http";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import Cookies from "js-cookie";
 import Link from "next/link";
@@ -8,10 +8,12 @@ import * as Yup from 'yup'
 
 const Login = () => {
     const router = useRouter()
+    const queryClient = useQueryClient()
     const { mutate: loginApi } = useMutation({
         mutationFn: (values) => Http.post('/v1/login', values),
         onSuccess: ({ data: { data } }) => {
             Cookies.set('auth_token', data.token, { expires: 30, path: '/' })
+            queryClient.invalidateQueries({ queryKey : ['user'] })
             router.push('/')
         }
     })

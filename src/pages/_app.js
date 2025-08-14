@@ -1,3 +1,4 @@
+import AuthProvider from '@/context/AuthContext';
 import '@/public/css/bootstrap.min.css'
 import '@/public/css/style.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -20,7 +21,9 @@ export default function App({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

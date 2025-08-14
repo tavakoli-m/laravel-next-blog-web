@@ -1,6 +1,29 @@
+import { useAuth } from "@/context/AuthContext";
+import { Http } from "@/services/Http";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Header = () => {
+    const { data } = useAuth()
+    const router = useRouter();
+
+    const { mutate: logoutApi } = useMutation({
+        mutationFn: () => Http.post('/v1/logout',
+            {},
+            {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get('auth_token')}`
+                }
+            }
+        ),
+        onSuccess: () => {
+            Cookies.remove('auth_token')
+            router.reload()
+        }
+    })
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-dark bg-blue ">
@@ -13,9 +36,15 @@ const Header = () => {
                     </ul>
                 </div>
                 <section className="d-inline ">
-                    <Link className="text-decoration-none text-white px-2 " href="/auth/register">register</Link>
-                    <Link className="text-decoration-none text-white " href="/auth/login">login</Link>
-                    {/* <a className="text-decoration-none text-white px-2 " href=" ">logout</a> */}
+                    {!data ? (
+                        <>
+                            <Link className="text-decoration-none text-white px-2 " href="/auth/register">register</Link>
+                            <Link className="text-decoration-none text-white " href="/auth/login">login</Link>
+                        </>
+                    ) : (
+                        <a className="text-decoration-none text-white px-2 " onClick={logoutApi}>logout</a>
+                    )}
+
                 </section>
             </nav>
         </>
