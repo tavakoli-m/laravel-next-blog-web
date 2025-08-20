@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
         <>
             <section id="app">
                 <Header />
-                <section class="container my-5">
+                <section className="container my-5">
                     {children}
                 </section>
             </section>

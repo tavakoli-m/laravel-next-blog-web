@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { Http } from "@/services/Http";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -24,15 +24,22 @@ const Header = () => {
         }
     })
 
+    const { data: categories } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => Http.get('/v1/categories').then(res => res.data)
+    })
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-dark bg-blue ">
                 <Link className="navbar-brand " href="/">Laravel + Next Blog Project</Link>
                 <div className="collapse navbar-collapse " id="navbarSupportedContent ">
                     <ul className="navbar-nav mr-auto ">
-                        <li className="nav-item ">
-                            <Link className="nav-link " href="/category/4">Sport</Link>
-                        </li>
+                        {categories?.data?.map((category) => (
+                            <li className="nav-item" key={category.id}>
+                                <Link className="nav-link " href={`/category/${category.id}`}>{category.name}</Link>
+                            </li>
+                        ))}
                     </ul>
                 </div>
                 <section className="d-inline ">
